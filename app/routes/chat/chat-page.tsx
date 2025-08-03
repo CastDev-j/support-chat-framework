@@ -3,6 +3,7 @@ import { Copy, Download, ThumbsUp, ThumbsDown, Send } from "lucide-react";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
+import { useParams } from "react-router";
 
 interface Message {
   role: "agent" | "user";
@@ -11,6 +12,7 @@ interface Message {
 }
 
 const ChatPage = () => {
+  const { clientId } = useParams<{ clientId: string }>();
   const [input, setInput] = useState("");
   const [messages] = useState<Message[]>([
     {
@@ -83,7 +85,7 @@ const ChatPage = () => {
               ) : (
                 <div className="flex flex-col items-end text-right">
                   <div className="flex items-center gap-2 text-sm mb-1">
-                    <span className="font-medium">G5</span>
+                    <span className="font-medium">{clientId}</span>
                     <span className="text-muted-foreground">
                       {message.timestamp}
                     </span>
