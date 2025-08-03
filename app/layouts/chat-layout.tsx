@@ -1,11 +1,13 @@
-import { Outlet } from "react-router";
+import { Outlet, useParams } from "react-router";
 import { useState, useEffect } from "react";
 import { Button } from "~/components/ui/button";
 import { FiX, FiMenu, FiInfo } from "react-icons/fi";
 import { ChatSideBar } from "./components/chat/side-bar";
 import { RightPanel } from "./components/chat/right-panet";
+import { cn } from "~/lib/utils";
 
 const ChatLayout = () => {
+  const { clientId } = useParams<{ clientId: string }>();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isRightPanelOpen, setIsRightPanelOpen] = useState(false);
 
@@ -45,18 +47,12 @@ const ChatLayout = () => {
             </Button>
           </div>
           <div className="flex items-center gap-2 ml-auto">
-            <Button variant="ghost" size="sm">
-              Guardar conversación
-            </Button>
             <Button
               variant="ghost"
-              size="icon"
-              onClick={() => {
-                setIsSidebarOpen(false);
-                setIsRightPanelOpen(false);
-              }}
+              size="sm"
+              className={cn(!clientId && "hidden")}
             >
-              <FiX className="w-4 h-4" />
+              Guardar conversación
             </Button>
           </div>
         </header>

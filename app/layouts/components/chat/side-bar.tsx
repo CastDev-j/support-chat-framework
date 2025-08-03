@@ -46,8 +46,6 @@ export const ChatSideBar = ({ isSidebarOpen, setIsSidebarOpen }: Props) => {
   const navigate = useNavigate();
 
   const handleCloseSession = () => {
-
-    
     navigate("/auth/login", { replace: true });
   };
 
@@ -59,7 +57,11 @@ export const ChatSideBar = ({ isSidebarOpen, setIsSidebarOpen }: Props) => {
       )}
     >
       <div className="h-14 flex items-center justify-between border-b px-4">
-        <Link to={"/chat"} className="flex items-center gap-2">
+        <Link
+          to={"/chat"}
+          className="flex items-center gap-2"
+          onClick={() => setIsSidebarOpen(false)}
+        >
           <div className="h-6 w-6 rounded-full bg-primary" />
           <span className="font-semibold">NexTalk</span>
         </Link>
