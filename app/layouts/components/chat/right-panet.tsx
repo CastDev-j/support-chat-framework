@@ -19,7 +19,7 @@ export const RightPanel = ({
       )}
     >
       <div className="h-14 border-b px-4 flex items-center justify-between">
-        <h2 className="font-medium">Contact details</h2>
+        <h2 className="font-medium">Detalles de contacto</h2>
         <Button
           size="icon"
           variant="ghost"
@@ -34,30 +34,30 @@ export const RightPanel = ({
           <div className="h-20 w-20 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl mb-3">
             G5
           </div>
-          <h3 className="font-semibold text-lg">G5 Customer</h3>
-          <p className="text-sm text-muted-foreground">Premium Account</p>
+          <h3 className="font-semibold text-lg">Cliente G5</h3>
+          <p className="text-sm text-muted-foreground">Cuenta Premium</p>
           <div className="flex items-center mt-1">
             <div className="h-2 w-2 rounded-full bg-green-500 mr-1" />
-            <span className="text-xs text-muted-foreground">Online</span>
+            <span className="text-xs text-muted-foreground">En línea</span>
           </div>
         </div>
 
         <div className="py-4 space-y-4 text-sm">
           <div>
             <h4 className="font-medium mb-2 flex items-center gap-1">
-              <FiMail className="w-4 h-4" /> Contact Info
+              <FiMail className="w-4 h-4" /> Información de contacto
             </h4>
             <div className="space-y-2">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Email:</span>
-                <span>customer@g5.com</span>
+                <span className="text-muted-foreground">Correo:</span>
+                <span>cliente@g5.com</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Phone:</span>
+                <span className="text-muted-foreground">Teléfono:</span>
                 <span>(555) 123-4567</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Customer ID:</span>
+                <span className="text-muted-foreground">ID Cliente:</span>
                 <span>G5-12345</span>
               </div>
             </div>
@@ -65,7 +65,7 @@ export const RightPanel = ({
 
           <div>
             <h4 className="font-medium mb-2 flex items-center gap-1">
-              <FiUserCheck className="w-4 h-4" /> Account Details
+              <FiUserCheck className="w-4 h-4" /> Detalles de la cuenta
             </h4>
             <div className="space-y-2">
               <div className="flex justify-between">
@@ -73,11 +73,11 @@ export const RightPanel = ({
                 <span>Premium</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Member since:</span>
-                <span>Jan 2023</span>
+                <span className="text-muted-foreground">Miembro desde:</span>
+                <span>Ene 2023</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Last bill:</span>
+                <span className="text-muted-foreground">Última factura:</span>
                 <span>$150.00</span>
               </div>
             </div>
@@ -86,7 +86,7 @@ export const RightPanel = ({
 
         <div className="pt-4 border-t">
           <Button variant="outline" size="sm" className="w-full">
-            View full profile
+            Ver perfil completo
           </Button>
         </div>
       </div>
