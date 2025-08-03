@@ -1,14 +1,22 @@
-import { Label } from "~/components/ui/label"
-import { Input } from "~/components/ui/input"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card"
-import { cn } from "~/lib/utils"
-import { Button } from "~/components/ui/button"
-import { Link } from "react-router"
+import { Label } from "~/components/ui/label";
+import { Input } from "~/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import { cn } from "~/lib/utils";
+import { Button } from "~/components/ui/button";
+import { Link, useNavigate } from "react-router";
 
-const LoginPage = ({
-  className,
-  ...props
-}: React.ComponentProps<"div">) => {
+const LoginPage = ({ className, ...props }: React.ComponentProps<"div">) => {
+  const navigate = useNavigate();
+  const handleGoogleLogin = () => {
+    navigate("/chat", { replace: true });
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -46,14 +54,22 @@ const LoginPage = ({
                 <Button type="submit" className="w-full">
                   Iniciar sesión
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleGoogleLogin}
+                >
                   Iniciar sesión con Google
                 </Button>
               </div>
             </div>
             <div className="mt-4 text-center text-sm">
               ¿No tienes una cuenta?{" "}
-              <Link to='/auth/register' className="underline underline-offset-4">
+              <Link
+                to="/auth/register"
+                className="underline underline-offset-4"
+              >
                 Regístrate
               </Link>
             </div>
@@ -61,7 +77,7 @@ const LoginPage = ({
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
 
 export default LoginPage;

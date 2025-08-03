@@ -3,7 +3,7 @@ import {
   index,
   layout,
   prefix,
-  route,
+  route
 } from "@react-router/dev/routes";
 
 export default [

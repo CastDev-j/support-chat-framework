@@ -9,10 +9,13 @@ import {
 } from "~/components/ui/card";
 import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const RegisterPage = ({ className, ...props }: React.ComponentProps<"div">) => {
-  const handleGoogleLogin = () => {};
+  const navigate = useNavigate();
+  const handleGoogleLogin = () => {
+    navigate("/chat", { replace: true });
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -49,8 +52,10 @@ const RegisterPage = ({ className, ...props }: React.ComponentProps<"div">) => {
                   Registrarse
                 </Button>
                 <Button
+                  type="button"
                   variant="outline"
                   className="w-full"
+                  onClick={handleGoogleLogin}
                 >
                   Registrarse con Google
                 </Button>
