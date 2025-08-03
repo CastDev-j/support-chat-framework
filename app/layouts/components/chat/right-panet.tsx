@@ -13,6 +13,8 @@ export const RightPanel = ({
   setIsRightPanelOpen,
 }: Props) => {
   const { clientId } = useParams<{ clientId: string }>();
+
+  
   return (
     <div
       className={cn(
