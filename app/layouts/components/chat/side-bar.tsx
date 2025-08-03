@@ -85,7 +85,7 @@ export const ChatSideBar = ({ isSidebarOpen, setIsSidebarOpen }: Props) => {
                   onClick={() => setIsSidebarOpen(false)}
                   className={({ isActive }) =>
                     cn(
-                      "flex py-2 px-2 rounded text-sm transition-all",
+                      "flex items-center py-2 px-2 rounded text-sm transition-all",
                       isActive && "font-semibold bg-accent"
                     )
                   }
@@ -115,10 +115,11 @@ export const ChatSideBar = ({ isSidebarOpen, setIsSidebarOpen }: Props) => {
                 to={`chat/${id}`}
                 className={({ isActive }) =>
                   cn(
-                    "flex py-2 px-2 rounded text-sm transition-all",
+                    "flex items-center py-2 px-2 rounded text-sm transition-all",
                     isActive && "font-semibold bg-accent"
                   )
                 }
+                onClick={() => setIsSidebarOpen(false)}
               >
                 <div
                   className={cn(
