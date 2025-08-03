@@ -1,5 +1,5 @@
 import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { DoorOpen } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { FiX } from "react-icons/fi";
 import { Link, NavLink, useNavigate } from "react-router";
 import { Button } from "~/components/ui/button";
@@ -145,7 +145,7 @@ export const ChatSideBar = ({ isSidebarOpen, setIsSidebarOpen }: Props) => {
           className="w-full flex items-center gap-2 justify-start text-destructive"
           onClick={handleCloseSession}
         >
-          <DoorOpen className="w-4 h-4" />
+          <LogOut className="w-4 h-4" />
           <span className="font-medium">Cerrar sesión</span>
         </Button>
       </div>
