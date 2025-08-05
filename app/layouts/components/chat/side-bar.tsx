@@ -1,7 +1,7 @@
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { LogOut } from "lucide-react";
 import { FiX } from "react-icons/fi";
-import { Link, NavLink, useNavigate } from "react-router";
+import { Link, NavLink, useNavigate, useNavigation } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
 import type { Client } from "~/interface/chat/chat-interfaces";
@@ -13,7 +13,6 @@ interface Props {
   clients: Client[];
   isLoading?: boolean;
 }
-
 
 // Colores contrastantes para los avatares
 const bgColors = [
@@ -33,15 +32,13 @@ export const ChatSideBar = ({
   isSidebarOpen,
   setIsSidebarOpen,
   clients,
-  isLoading
+  isLoading,
 }: Props) => {
   const navigate = useNavigate();
 
   const handleCloseSession = () => {
     navigate("/auth/login", { replace: true });
   };
-
-  
 
   return (
     <div
@@ -97,6 +94,9 @@ const ContactList = ({
   clients: Client[];
   setIsSidebarOpen: (open: boolean) => void;
 }) => {
+  const navigation = useNavigation();
+  const isNavigating = Boolean(navigation.location);
+
   return (
     <ScrollArea className="overflow-y-auto max-h-[calc(100vh-64px)] pr-1">
       <div className="space-y-4">
@@ -111,7 +111,7 @@ const ContactList = ({
                 className={({ isActive }) =>
                   cn(
                     "flex items-center py-2 px-2 rounded text-sm transition-all",
-                    isActive && "font-semibold bg-accent"
+                    isActive && !isNavigating && "font-semibold bg-accent"
                   )
                 }
               >

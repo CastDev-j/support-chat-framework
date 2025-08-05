@@ -89,6 +89,7 @@ export default function TestingPage({
 }: Route.ComponentProps) {
   const navigation = useNavigation();
   const isPosting = navigation.state === "submitting";
+  const isNavigating = Boolean(navigation.location);
 
   return (
     <>
