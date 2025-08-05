@@ -1,4 +1,5 @@
 import { FiMail, FiUserCheck, FiX } from "react-icons/fi";
+import { useNavigation } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
 import type { Client } from "~/interface/chat/chat-interfaces";
@@ -17,6 +18,8 @@ export const RightPanel = ({
   isLoading,
   client,
 }: Props) => {
+  const navigation = useNavigation();
+  const isNavigating = Boolean(navigation.location);
 
   return (
     <div
@@ -37,7 +40,7 @@ export const RightPanel = ({
         </Button>
       </div>
 
-      {isLoading ? (
+      {isLoading || isNavigating ? (
         <RightPanelSkeleton />
       ) : client ? (
         <ClientProfile client={client} />

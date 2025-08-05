@@ -1,8 +1,37 @@
-import { NavLink } from "react-router";
+import { Form, NavLink } from "react-router";
 import type { Route } from "./+types/testing-page";
 import { FaSpinner } from "react-icons/fa";
 import { sleep } from "~/lib/sleep";
 import { cn } from "~/lib/utils";
+import { Label } from "~/components/ui/label";
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
+import { useNavigation } from "react-router";
+
+export async function action({ request }: Route.ActionArgs) {
+  const data = await request.clone().formData();
+
+  const name = data.get("name");
+  const age = data.get("age");
+
+  await sleep(1000);
+
+  console.log({ name, age });
+
+  return { ok: true, user: { name, age } };
+}
+
+export async function clientAction({
+  serverAction,
+  request,
+}: Route.ClientActionArgs) {
+  let data = await serverAction();
+
+  await sleep(1000);
+  console.log("Client action executed with form data:", data);
+
+  return { ok: true, data };
+}
 
 export async function loader({ params }: Route.LoaderArgs) {
   const {} = params;
@@ -58,6 +87,9 @@ export default function TestingPage({
   params,
   matches,
 }: Route.ComponentProps) {
+  const navigation = useNavigation();
+  const isPosting = navigation.state === "submitting";
+
   return (
     <>
       <title>Página de Prueba | Soporte Chat Framework</title>
@@ -123,6 +155,50 @@ export default function TestingPage({
             Ruta sin Argumentos y Props
           </NavLink>
         </div>
+
+        <Form
+          action=""
+          method="post"
+          className="mt-10 bg-blue-50 p-6 rounded-lg shadow flex flex-col gap-6"
+        >
+          <h2 className="text-xl font-semibold text-blue-700 mb-2">
+            Formulario de Prueba
+          </h2>
+          <div className="grid gap-4">
+            <div>
+              <Label htmlFor="name" className="text-blue-700">
+                Nombre
+              </Label>
+              <Input
+                name="name"
+                type="text"
+                placeholder="Ingresa tu nombre"
+                className="mt-1"
+              />
+            </div>
+            <div>
+              <Label htmlFor="age" className="text-blue-700">
+                Edad
+              </Label>
+              <Input
+                name="age"
+                type="number"
+                placeholder="Ingresa tu edad"
+                className="mt-1"
+              />
+            </div>
+          </div>
+          <Button
+            type="submit"
+            className={cn(
+              "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-colors",
+              isPosting ? "opacity-50 pointer-events-none" : ""
+            )}
+            disabled={isPosting}
+          >
+            Enviar
+          </Button>
+        </Form>
       </div>
     </>
   );
