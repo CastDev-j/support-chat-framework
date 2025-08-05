@@ -61,7 +61,7 @@ const fakeClients = {
 };
 
 export const getClients = async (): Promise<Client[]> => {
-  await sleep(500);
+  await sleep(1000);
   return fakeClients.getClients();
 };
 

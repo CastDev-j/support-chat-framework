@@ -1,19 +1,22 @@
 import { FiMail, FiUserCheck, FiX } from "react-icons/fi";
-import { useParams } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
+import type { Client } from "~/interface/chat/chat-interfaces";
 import { cn } from "~/lib/utils";
 
 interface Props {
   isRightPanelOpen: boolean;
   setIsRightPanelOpen: (open: boolean) => void;
+  isLoading?: boolean;
+  client: Client | null;
 }
 
 export const RightPanel = ({
   isRightPanelOpen,
   setIsRightPanelOpen,
+  isLoading,
+  client,
 }: Props) => {
-  const { clientId } = useParams<{ clientId: string }>();
 
   return (
     <div
@@ -34,24 +37,32 @@ export const RightPanel = ({
         </Button>
       </div>
 
-      <RightPanelSkeleton />
-
-      {clientId ? <ClientProfile /> : <NoClientSelected />}
+      {isLoading ? (
+        <RightPanelSkeleton />
+      ) : client ? (
+        <ClientProfile client={client} />
+      ) : (
+        <NoClientSelected />
+      )}
     </div>
   );
 };
 
-const ClientProfile = () => {
-  const { clientId } = useParams<{ clientId: string }>();
+export default RightPanel;
+
+const ClientProfile = ({ client }: { client: Client }) => {
+  const { address, currentPlan, email, id, memberSince, name, phone } = client;
 
   return (
     <div className="p-4">
       <div className="flex flex-col items-center pb-6 border-b">
         <div className="h-20 w-20 rounded-full bg-blue-500 flex items-center justify-center text-white text-xl mb-3">
-          {clientId}
+          {name?.[0] || id}
         </div>
-        <h3 className="font-semibold text-lg">Cliente {clientId}</h3>
-        <p className="text-sm text-muted-foreground">Cuenta Premium</p>
+        <h3 className="font-semibold text-lg">{name || `Cliente ${id}`}</h3>
+        <p className="text-sm text-muted-foreground">
+          {currentPlan || "Sin plan"}
+        </p>
         <div className="flex items-center mt-1">
           <div className="h-2 w-2 rounded-full bg-green-500 mr-1" />
           <span className="text-xs text-muted-foreground">En línea</span>
@@ -66,15 +77,19 @@ const ClientProfile = () => {
           <div className="space-y-2">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Correo:</span>
-              <span>cliente@g5.com</span>
+              <span>{email || "No disponible"}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Teléfono:</span>
-              <span>(555) 123-4567</span>
+              <span>{phone || "No disponible"}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Dirección:</span>
+              <span>{address || "No disponible"}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">ID Cliente:</span>
-              <span>G5-12345</span>
+              <span>{id}</span>
             </div>
           </div>
         </div>
@@ -86,15 +101,20 @@ const ClientProfile = () => {
           <div className="space-y-2">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Plan:</span>
-              <span>Premium</span>
+              <span>{currentPlan || "No disponible"}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Miembro desde:</span>
-              <span>Ene 2023</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Última factura:</span>
-              <span>$150.00</span>
+              <span>
+                {" "}
+                {memberSince
+                  ? new Date(memberSince).toLocaleDateString("es-MX", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })
+                  : "No disponible"}
+              </span>
             </div>
           </div>
         </div>

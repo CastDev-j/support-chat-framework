@@ -3,30 +3,17 @@ import { LogOut } from "lucide-react";
 import { FiX } from "react-icons/fi";
 import { Link, NavLink, useNavigate } from "react-router";
 import { Button } from "~/components/ui/button";
+import { Skeleton } from "~/components/ui/skeleton";
+import type { Client } from "~/interface/chat/chat-interfaces";
 import { cn } from "~/lib/utils";
 
 interface Props {
   isSidebarOpen: boolean;
   setIsSidebarOpen: (open: boolean) => void;
+  clients: Client[];
+  isLoading?: boolean;
 }
 
-interface Contacto {
-  id: string;
-  nombre: string;
-}
-
-const listaContactos: Contacto[] = [
-  { id: "g5", nombre: "Cliente G5" },
-  { id: "jd", nombre: "Juan Pérez" },
-  { id: "as", nombre: "Alicia Sánchez" },
-  { id: "rj", nombre: "Roberto Jiménez" },
-  { id: "ew", nombre: "Emma Wilson" },
-];
-
-const contactosRecientes: Contacto[] = [
-  { id: "tm", nombre: "Tomás Martínez" },
-  { id: "sb", nombre: "Sara Blanco" },
-];
 
 // Colores contrastantes para los avatares
 const bgColors = [
@@ -42,12 +29,19 @@ const bgColors = [
 
 const getColorClass = (index: number) => bgColors[index % bgColors.length];
 
-export const ChatSideBar = ({ isSidebarOpen, setIsSidebarOpen }: Props) => {
+export const ChatSideBar = ({
+  isSidebarOpen,
+  setIsSidebarOpen,
+  clients,
+  isLoading
+}: Props) => {
   const navigate = useNavigate();
 
   const handleCloseSession = () => {
     navigate("/auth/login", { replace: true });
   };
+
+  
 
   return (
     <div
@@ -75,71 +69,12 @@ export const ChatSideBar = ({ isSidebarOpen, setIsSidebarOpen }: Props) => {
         </Button>
       </div>
 
-      <ScrollArea className="overflow-y-auto max-h-[calc(100vh-64px)] pr-1">
-        <div className="space-y-4">
-          <div>
-            <h3 className="text-sm font-semibold px-2">Contactos</h3>
-            <div className="space-y-1">
-              {listaContactos.map(({ id, nombre }, index) => (
-                <NavLink
-                  key={id}
-                  to={`chat/${id}`}
-                  onClick={() => setIsSidebarOpen(false)}
-                  className={({ isActive }) =>
-                    cn(
-                      "flex items-center py-2 px-2 rounded text-sm transition-all",
-                      isActive && "font-semibold bg-accent"
-                    )
-                  }
-                >
-                  <div
-                    className={cn(
-                      "h-6 w-6 rounded-full mr-2 flex items-center justify-center text-white text-xs",
-                      getColorClass(index)
-                    )}
-                  >
-                    {nombre
-                      .split(" ")
-                      .map((w) => w[0])
-                      .join("")}
-                  </div>
-                  {nombre}
-                </NavLink>
-              ))}
-            </div>
-          </div>
+      {isLoading ? (
+        <SideBarSkeleton />
+      ) : (
+        <ContactList clients={clients} setIsSidebarOpen={setIsSidebarOpen} />
+      )}
 
-          <div className="pt-4 border-t">
-            <h3 className="px-2 text-sm font-semibold mb-1">Recientes</h3>
-            {contactosRecientes.map(({ id, nombre }, index) => (
-              <NavLink
-                key={id}
-                to={`chat/${id}`}
-                className={({ isActive }) =>
-                  cn(
-                    "flex items-center py-2 px-2 rounded text-sm transition-all",
-                    isActive && "font-semibold bg-accent"
-                  )
-                }
-                onClick={() => setIsSidebarOpen(false)}
-              >
-                <div
-                  className={cn(
-                    "h-6 w-6 rounded-full mr-2 flex items-center justify-center text-white text-xs",
-                    getColorClass(index + listaContactos.length)
-                  )}
-                >
-                  {nombre
-                    .split(" ")
-                    .map((w) => w[0])
-                    .join("")}
-                </div>
-                {nombre}
-              </NavLink>
-            ))}
-          </div>
-        </div>
-      </ScrollArea>
       <div className="absolute bottom-0 left-0 right-0 border-t bg-background py-3 px-4">
         <Button
           variant="ghost"
@@ -154,3 +89,112 @@ export const ChatSideBar = ({ isSidebarOpen, setIsSidebarOpen }: Props) => {
     </div>
   );
 };
+
+const ContactList = ({
+  clients,
+  setIsSidebarOpen,
+}: {
+  clients: Client[];
+  setIsSidebarOpen: (open: boolean) => void;
+}) => {
+  return (
+    <ScrollArea className="overflow-y-auto max-h-[calc(100vh-64px)] pr-1">
+      <div className="space-y-4">
+        <div>
+          <h3 className="text-sm font-semibold px-2">Contactos</h3>
+          <div className="space-y-1">
+            {clients.map(({ id, name }, index) => (
+              <NavLink
+                key={id}
+                to={`chat/${id}`}
+                onClick={() => setIsSidebarOpen(false)}
+                className={({ isActive }) =>
+                  cn(
+                    "flex items-center py-2 px-2 rounded text-sm transition-all",
+                    isActive && "font-semibold bg-accent"
+                  )
+                }
+              >
+                <div
+                  className={cn(
+                    "h-6 w-6 rounded-full mr-2 flex items-center justify-center text-white text-xs",
+                    getColorClass(index)
+                  )}
+                >
+                  {name
+                    .split(" ")
+                    .map((w) => w[0])
+                    .join("")}
+                </div>
+                {name}
+              </NavLink>
+            ))}
+          </div>
+        </div>
+
+        <div className="pt-4 border-t">
+          <h3 className="px-2 text-sm font-semibold mb-1">Recientes</h3>
+          {clients.slice(0, 2).map(({ id, name }, index) => (
+            <NavLink
+              key={id}
+              to={`chat/${id}`}
+              className={({ isActive }) =>
+                cn(
+                  "flex items-center py-2 px-2 rounded text-sm transition-all",
+                  isActive && "font-semibold bg-accent"
+                )
+              }
+              onClick={() => setIsSidebarOpen(false)}
+            >
+              <div
+                className={cn(
+                  "h-6 w-6 rounded-full mr-2 flex items-center justify-center text-white text-xs",
+                  getColorClass(Math.floor(Math.random() * bgColors.length))
+                )}
+              >
+                {name
+                  .split(" ")
+                  .map((w) => w[0])
+                  .join("")}
+              </div>
+              {name}
+            </NavLink>
+          ))}
+        </div>
+      </div>
+    </ScrollArea>
+  );
+};
+
+const SideBarSkeleton = () => (
+  <ScrollArea className="overflow-y-auto max-h-[calc(100vh-64px)] pr-1">
+    <div className="space-y-4">
+      <div>
+        <h3 className="text-sm font-semibold px-2">Contactos</h3>
+        <div className="space-y-1">
+          {[...Array(5)].map((_, idx) => (
+            <div
+              key={idx}
+              className="flex items-center py-2 px-2 rounded text-sm transition-all"
+            >
+              <Skeleton className={cn("h-6 w-6 rounded-full mr-2")} />
+              <Skeleton className="h-4 w-24" />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="pt-4 border-t">
+        <h3 className="px-2 text-sm font-semibold mb-1">Recientes</h3>
+        {[...Array(3)].map((_, idx) => (
+          <div
+            key={idx}
+            className="flex items-center py-2 px-2 rounded text-sm transition-all"
+          >
+            <Skeleton className={cn("h-6 w-6 rounded-full mr-2")} />
+            <Skeleton className="h-4 w-20" />
+          </div>
+        ))}
+      </div>
+    </div>
+  </ScrollArea>
+);

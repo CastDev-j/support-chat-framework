@@ -3,7 +3,9 @@ import { Copy, Download, ThumbsUp, ThumbsDown, Send } from "lucide-react";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
-import { useParams } from "react-router";
+import { getClient } from "~/fake/fake-data";
+import type { LoaderFunctionArgs } from "react-router";
+import type { Route } from "./+types/chat-page";
 
 interface Message {
   role: "agent" | "user";
@@ -11,8 +13,21 @@ interface Message {
   timestamp: string;
 }
 
-const ChatPage = () => {
-  const { clientId } = useParams<{ clientId: string }>();
+export async function clientLoader({ params }: LoaderFunctionArgs) {
+  const { clientId = "" } = params;
+  const client = await getClient(clientId);
+
+  return { client };
+}
+
+export function HydrateFallback() {
+  return <ChatPageSkeleton />;
+}
+
+const ChatPage = ({ loaderData }: Route.ComponentProps) => {
+
+  const { client } = loaderData;
+
   const [input, setInput] = useState("");
   const [messages] = useState<Message[]>([
     {
@@ -85,7 +100,7 @@ const ChatPage = () => {
               ) : (
                 <div className="flex flex-col items-end text-right">
                   <div className="flex items-center gap-2 text-sm mb-1">
-                    <span className="font-medium">{clientId}</span>
+                    <span className="font-medium">{12}</span>
                     <span className="text-muted-foreground">
                       {message.timestamp}
                     </span>
@@ -133,3 +148,19 @@ const ChatPage = () => {
 };
 
 export default ChatPage;
+
+export const ChatPageSkeleton = () => {
+  return (
+    <div className="flex flex-col items-center justify-center h-full text-center gap-6">
+      <div className="flex flex-col items-center gap-2">
+        <span className="w-12 h-12 border-4 border-muted-foreground border-t-transparent rounded-full animate-spin"></span>
+        <h2 className="text-2xl font-semibold text-muted-foreground">
+          Cargando...
+        </h2>
+      </div>
+      <p className="text-muted-foreground max-w-md">
+        Por favor espera mientras cargamos la información del chat.
+      </p>
+    </div>
+  );
+};
