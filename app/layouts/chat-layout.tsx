@@ -1,7 +1,7 @@
 import { Outlet, useParams } from "react-router";
 import { useState, useEffect } from "react";
 import { Button } from "~/components/ui/button";
-import { FiX, FiMenu, FiInfo } from "react-icons/fi";
+import { FiMenu, FiInfo } from "react-icons/fi";
 import { ChatSideBar } from "./components/chat/side-bar";
 import { RightPanel } from "./components/chat/right-panet";
 import { cn } from "~/lib/utils";

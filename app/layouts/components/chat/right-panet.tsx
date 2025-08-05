@@ -1,6 +1,7 @@
 import { FiMail, FiUserCheck, FiX } from "react-icons/fi";
 import { useParams } from "react-router";
 import { Button } from "~/components/ui/button";
+import { Skeleton } from "~/components/ui/skeleton";
 import { cn } from "~/lib/utils";
 
 interface Props {
@@ -14,7 +15,6 @@ export const RightPanel = ({
 }: Props) => {
   const { clientId } = useParams<{ clientId: string }>();
 
-  
   return (
     <div
       className={cn(
@@ -33,6 +33,8 @@ export const RightPanel = ({
           <FiX className="w-4 h-4" />
         </Button>
       </div>
+
+      <RightPanelSkeleton />
 
       {clientId ? <ClientProfile /> : <NoClientSelected />}
     </div>
@@ -119,6 +121,49 @@ const NoClientSelected = () => {
       <p className="text-muted-foreground max-w-md">
         Selecciona un cliente a la izquierda para ver sus detalles de contacto.
       </p>
+    </div>
+  );
+};
+
+const RightPanelSkeleton = () => {
+  return (
+    <div className="p-4 animate-pulse">
+      <div className="flex flex-col items-center pb-6 border-b">
+        <Skeleton className="h-20 w-20 rounded-full mb-3" />
+        <Skeleton className="h-6 w-32 mb-2" />
+        <Skeleton className="h-4 w-24 mb-1" />
+        <Skeleton className="h-4 w-20" />
+      </div>
+
+      <div className="py-4 space-y-4 text-sm">
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <Skeleton className="h-4 w-4" />
+            <Skeleton className="h-4 w-40" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <Skeleton className="h-4 w-4" />
+            <Skeleton className="h-4 w-40" />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+          </div>
+        </div>
+      </div>
+
+      <div className="pt-4 border-t">
+        <Skeleton className="h-8 w-full" />
+      </div>
     </div>
   );
 };
