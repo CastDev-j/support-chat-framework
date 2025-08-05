@@ -88,6 +88,9 @@ export function HydrateFallback() {
   );
 }
 
+clientLoader.hydrate = true as const;
+
+
 const ChatLayout = ({ loaderData }: Route.ComponentProps) => {
   const { clients, client } = loaderData;
 

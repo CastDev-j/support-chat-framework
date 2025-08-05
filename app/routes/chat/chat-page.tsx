@@ -128,6 +128,8 @@ const ChatPage = ({ loaderData }: Route.ComponentProps) => {
   );
 };
 
+clientLoader.hydrate = true as const;
+
 export default ChatPage;
 
 export const ChatPageSkeleton = () => {

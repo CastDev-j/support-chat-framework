@@ -7,6 +7,10 @@ import {
 } from "@react-router/dev/routes";
 
 export default [
+
+  // Testing
+  index("routes/testing-page.tsx"),
+
   // Auth
   ...prefix("auth", [
     layout("./layouts/auth-layout.tsx", [
