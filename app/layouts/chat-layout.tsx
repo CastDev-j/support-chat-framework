@@ -2,6 +2,7 @@ import {
   Outlet,
   redirect,
   useParams,
+  type ClientLoaderFunctionArgs,
   type LoaderFunctionArgs,
 } from "react-router";
 import { useState, useEffect } from "react";
@@ -19,15 +20,22 @@ export async function loader({ request }: Route.LoaderArgs) {
   const session = await getSession(request.headers.get("Cookie"));
   if (!session.has("userId")) return redirect("/auth/login");
 
-  return {};
+  const name = session.get("name");
+  const email = session.get("email");
+
+  return { name, email };
 }
-export async function clientLoader({ params }: LoaderFunctionArgs) {
+export async function clientLoader({
+  params,
+  serverLoader,
+}: ClientLoaderFunctionArgs) {
   const { clientId = "" } = params;
+  const serverData = await serverLoader<{ name: string; email: string }>();
 
   const clients = await getClients();
   const client = await getClient(clientId);
 
-  return { clients, client };
+  return { clients, client, user: { ...serverData } };
 }
 
 export function HydrateFallback() {
@@ -103,7 +111,8 @@ export function HydrateFallback() {
 clientLoader.hydrate = true as const;
 
 const ChatLayout = ({ loaderData }: Route.ComponentProps) => {
-  const { clients, client } = loaderData;
+  const { clients, client, user } = loaderData;
+  console.log(user.name, user.email);
 
   const { clientId } = useParams<{ clientId: string }>();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -124,6 +133,7 @@ const ChatLayout = ({ loaderData }: Route.ComponentProps) => {
         isSidebarOpen={isSidebarOpen}
         setIsSidebarOpen={setIsSidebarOpen}
         clients={clients}
+        userName={user.name}
       />
 
       {/* PRINCIPAL */}

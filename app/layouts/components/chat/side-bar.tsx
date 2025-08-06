@@ -12,6 +12,7 @@ interface Props {
   setIsSidebarOpen: (open: boolean) => void;
   clients: Client[];
   isLoading?: boolean;
+  userName?: string;
 }
 
 // Colores contrastantes para los avatares
@@ -33,6 +34,7 @@ export const ChatSideBar = ({
   setIsSidebarOpen,
   clients,
   isLoading,
+  userName,
 }: Props) => {
   const navigate = useNavigate();
 
@@ -54,7 +56,7 @@ export const ChatSideBar = ({
           onClick={() => setIsSidebarOpen(false)}
         >
           <div className="h-6 w-6 rounded-full bg-primary" />
-          <span className="font-semibold">NexTalk</span>
+          <span className="font-semibold">{userName}</span>
         </Link>
         <Button
           size="icon"
