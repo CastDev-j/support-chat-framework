@@ -9,14 +9,8 @@ import {
 } from "~/components/ui/card";
 import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
-import {
-  data,
-  Form,
-  Link,
-  redirect,
-  useNavigate,
-  useNavigation,
-} from "react-router";
+import { data, Form, Link, redirect, useNavigation } from "react-router";
+import { MdErrorOutline } from "react-icons/md";
 import type { Route } from "./+types/login-page";
 import { getSession, commitSession } from "~/sessions.server";
 import { loginUser } from "~/fake/fake-data";
@@ -44,11 +38,23 @@ export async function action({ request }: Route.ActionArgs) {
 
   if (emailInput == "error@error.error") {
     session.flash("error", "Invalid email/password");
-    return redirect("/auth/login?error=Invalid Email", {
-      headers: {
-        "Set-Cookie": await commitSession(session),
+    // return redirect("/auth/login?error=Invalid Email", {
+    //   headers: {
+    //     "Set-Cookie": await commitSession(session),
+    //   },
+    // });
+    return data(
+      {
+        error: "Credenciales inválidas",
       },
-    });
+      {
+        headers: {
+          "Set-Cookie": await commitSession(session),
+        },
+        status: 400,
+        statusText: "Bad Request",
+      }
+    );
   }
 
   const { id, token, name, email } = await loginUser();
@@ -66,12 +72,14 @@ export async function action({ request }: Route.ActionArgs) {
   });
 }
 
-const LoginPage = ({ className, ...props }: React.ComponentProps<"div">) => {
+export default function LoginPage({ actionData }: Route.ComponentProps) {
+  const { error } = actionData || {};
+
   const navigation = useNavigation();
   const isNavigating = Boolean(navigation.location);
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex flex-col gap-6")}>
       <Card>
         <CardHeader>
           <CardTitle>Inicia sesión en tu cuenta</CardTitle>
@@ -107,6 +115,14 @@ const LoginPage = ({ className, ...props }: React.ComponentProps<"div">) => {
                 </div>
                 <Input name="password" type="password" required />
               </div>
+              {error && (
+                <div className="flex items-center justify-start gap-2 text-red-500 text-sm font-medium -mt-2">
+                  <span className="flex-shrink-0">
+                    <MdErrorOutline className="h-4 w-4" />
+                  </span>
+                  {error}
+                </div>
+              )}
               <div className="flex flex-col gap-3">
                 <Button
                   type="submit"
@@ -143,6 +159,4 @@ const LoginPage = ({ className, ...props }: React.ComponentProps<"div">) => {
       </Card>
     </div>
   );
-};
-
-export default LoginPage;
+}
