@@ -15,7 +15,7 @@ import type { Route } from "./+types/chat-layout";
 import { ChatPageSkeleton } from "~/routes/chat/chat-page";
 import { getSession } from "~/sessions.server";
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   const session = await getSession(request.headers.get("Cookie"));
   if (!session.has("userId")) return redirect("/auth/login");
 
