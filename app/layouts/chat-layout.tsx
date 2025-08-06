@@ -1,4 +1,9 @@
-import { Outlet, useParams, type LoaderFunctionArgs } from "react-router";
+import {
+  Outlet,
+  redirect,
+  useParams,
+  type LoaderFunctionArgs,
+} from "react-router";
 import { useState, useEffect } from "react";
 import { Button } from "~/components/ui/button";
 import { FiMenu, FiInfo } from "react-icons/fi";
@@ -8,7 +13,14 @@ import { cn } from "~/lib/utils";
 import { getClient, getClients } from "~/fake/fake-data";
 import type { Route } from "./+types/chat-layout";
 import { ChatPageSkeleton } from "~/routes/chat/chat-page";
+import { getSession } from "~/sessions.server";
 
+export async function loader({ request }: LoaderFunctionArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+  if (!session.has("userId")) return redirect("/auth/login");
+
+  return {};
+}
 export async function clientLoader({ params }: LoaderFunctionArgs) {
   const { clientId = "" } = params;
 
@@ -89,7 +101,6 @@ export function HydrateFallback() {
 }
 
 clientLoader.hydrate = true as const;
-
 
 const ChatLayout = ({ loaderData }: Route.ComponentProps) => {
   const { clients, client } = loaderData;

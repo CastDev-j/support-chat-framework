@@ -37,7 +37,7 @@ export const ChatSideBar = ({
   const navigate = useNavigate();
 
   const handleCloseSession = () => {
-    navigate("/auth/login", { replace: true });
+    navigate("/auth/logout", { replace: true });
   };
 
   return (

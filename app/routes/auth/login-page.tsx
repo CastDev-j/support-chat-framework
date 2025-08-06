@@ -9,13 +9,66 @@ import {
 } from "~/components/ui/card";
 import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
-import { Link, useNavigate } from "react-router";
+import {
+  data,
+  Form,
+  Link,
+  redirect,
+  useNavigate,
+  useNavigation,
+} from "react-router";
+import type { Route } from "./+types/login-page";
+import { getSession, commitSession } from "~/sessions.server";
+import { loginUser } from "~/fake/fake-data";
+
+export async function loader({ request }: Route.LoaderArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+
+  if (session.has("userId")) return redirect("/chat");
+
+  return data(
+    { error: session.get("error") },
+    {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    }
+  );
+}
+
+export async function action({ request }: Route.ActionArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const form = await request.formData();
+  const emailInput = form.get("email");
+  const passwordInput = form.get("password");
+
+  if (emailInput == "error@error.error") {
+    session.flash("error", "Invalid email/password");
+    return redirect("/auth/login?error=Invalid Email", {
+      headers: {
+        "Set-Cookie": await commitSession(session),
+      },
+    });
+  }
+
+  const { id, token, name, email } = await loginUser();
+
+  session.set("userId", id);
+  session.set("token", token);
+  session.set("name", name);
+  session.set("email", email);
+
+  // Login succeeded, send them to the home page.
+  return redirect("/chat", {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
+}
 
 const LoginPage = ({ className, ...props }: React.ComponentProps<"div">) => {
-  const navigate = useNavigate();
-  const handleGoogleLogin = () => {
-    navigate("/chat", { replace: true });
-  };
+  const navigation = useNavigation();
+  const isNavigating = Boolean(navigation.location);
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -27,12 +80,12 @@ const LoginPage = ({ className, ...props }: React.ComponentProps<"div">) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <Form method="post">
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Correo electrónico</Label>
                 <Input
-                  id="email"
+                  name="email"
                   type="email"
                   placeholder="m@ejemplo.com"
                   required
@@ -41,24 +94,32 @@ const LoginPage = ({ className, ...props }: React.ComponentProps<"div">) => {
               <div className="grid gap-3">
                 <div className="flex items-center">
                   <Label htmlFor="password">Contraseña</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                  <Link
+                    to="#"
+                    className={cn(
+                      "ml-auto inline-block text-sm underline-offset-4 hover:underline",
+                      isNavigating &&
+                        "cursor-not-allowed pointer-events-none opacity-50"
+                    )}
                   >
                     ¿Olvidaste tu contraseña?
-                  </a>
+                  </Link>
                 </div>
-                <Input id="password" type="password" required />
+                <Input name="password" type="password" required />
               </div>
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  Iniciar sesión
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isNavigating}
+                >
+                  {isNavigating ? "Iniciando sesión..." : "Iniciar sesión"}
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
                   className="w-full"
-                  onClick={handleGoogleLogin}
+                  disabled={isNavigating}
                 >
                   Iniciar sesión con Google
                 </Button>
@@ -68,12 +129,16 @@ const LoginPage = ({ className, ...props }: React.ComponentProps<"div">) => {
               ¿No tienes una cuenta?{" "}
               <Link
                 to="/auth/register"
-                className="underline underline-offset-4"
+                className={cn(
+                  "underline underline-offset-4",
+                  isNavigating &&
+                    "cursor-not-allowed pointer-events-none opacity-50"
+                )}
               >
                 Regístrate
               </Link>
             </div>
-          </form>
+          </Form>
         </CardContent>
       </Card>
     </div>
