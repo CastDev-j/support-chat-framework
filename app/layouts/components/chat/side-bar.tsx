@@ -110,10 +110,11 @@ const ContactList = ({
                 key={id}
                 to={`chat/${id}`}
                 onClick={() => setIsSidebarOpen(false)}
-                className={({ isActive }) =>
+                className={({ isActive, isPending }) =>
                   cn(
                     "flex items-center py-2 px-2 rounded text-sm transition-all",
-                    isActive && !isNavigating && "font-semibold bg-accent"
+                    isActive && !isNavigating && "font-semibold bg-accent",
+                    isPending && "opacity-50 cursor-not-allowed"
                   )
                 }
               >
