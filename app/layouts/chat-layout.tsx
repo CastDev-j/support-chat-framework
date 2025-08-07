@@ -3,6 +3,7 @@ import {
   redirect,
   useParams,
   type ClientLoaderFunctionArgs,
+  type ShouldRevalidateFunctionArgs,
 } from "react-router";
 import { useState, useEffect } from "react";
 import { Button } from "~/components/ui/button";

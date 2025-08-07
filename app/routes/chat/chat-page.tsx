@@ -1,18 +1,18 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Copy, Download, ThumbsUp, ThumbsDown, Send } from "lucide-react";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
-import { getClientMessages } from "~/fake/fake-data";
-import { useNavigation, type LoaderFunctionArgs } from "react-router";
+import { getClientMessages, sendMessage } from "~/fake/fake-data";
+import {
+  useNavigation,
+  useSubmit,
+  type ActionFunctionArgs,
+  type LoaderFunctionArgs,
+  type ShouldRevalidateFunctionArgs,
+} from "react-router";
 import type { Route } from "./+types/chat-page";
 import { FiMessageSquare } from "react-icons/fi";
-
-interface Message {
-  role: "agent" | "user";
-  content: string;
-  timestamp: string;
-}
 
 export async function clientLoader({ params }: LoaderFunctionArgs) {
   const { clientId = "" } = params;
@@ -25,12 +25,32 @@ export function HydrateFallback() {
   return <ChatPageSkeleton />;
 }
 
+export async function clientAction({ request, params }: ActionFunctionArgs) {
+  const { clientId = "" } = params;
+  const data = await request.formData();
+  const message = `${data.get("message")}`;
+
+  const newMessage = await sendMessage({
+    clientId,
+    sender: "agent",
+    content: message,
+    createdAt: new Date(),
+  });
+
+  return newMessage;
+}
+
 const ChatPage = ({ loaderData }: Route.ComponentProps) => {
   const { messages, clientId } = loaderData;
+  const submit = useSubmit();
   const navigation = useNavigation();
   const isNavigating = Boolean(navigation.location);
 
   const [input, setInput] = useState("");
+
+  const handleSubmit = useCallback(() => {
+    submit({ message: input }, { method: "post" });
+  }, [input, submit]);
 
   return (
     <div className="flex flex-col h-full">
@@ -125,7 +145,7 @@ const ChatPage = ({ loaderData }: Route.ComponentProps) => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            // Aquí podrías manejar el envío
+            handleSubmit();
             setInput("");
           }}
           className="flex items-end gap-2 max-w-3xl mx-auto"
