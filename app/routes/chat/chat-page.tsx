@@ -43,7 +43,7 @@ const ChatPage = ({ loaderData }: Route.ComponentProps) => {
             {messages.length > 0 ? (
               messages.map((message, index) => (
                 <div key={index}>
-                  {message.sender === "agent" ? (
+                  {message.sender === "client" ? (
                     <div className="flex items-start gap-3">
                       <div className="h-8 w-8 rounded-full bg-primary flex-shrink-0" />
                       <div className="space-y-2">
