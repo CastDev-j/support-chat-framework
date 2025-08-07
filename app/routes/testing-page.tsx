@@ -16,8 +16,6 @@ export async function action({ request }: Route.ActionArgs) {
 
   await sleep(1000);
 
-  console.log({ name, age });
-
   return { ok: true, user: { name, age } };
 }
 

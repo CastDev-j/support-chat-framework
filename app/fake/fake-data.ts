@@ -23,8 +23,6 @@ export const checkAuth = async (token: string) => {
     throw new Error("Invalid token");
   }
 
-  console.log("checkAuth", token);
-
   return {
     id: "U1-12345",
     name: "Fernando Herrera",

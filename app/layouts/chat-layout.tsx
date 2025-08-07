@@ -111,7 +111,6 @@ clientLoader.hydrate = true as const;
 
 const ChatLayout = ({ loaderData }: Route.ComponentProps) => {
   const { clients, client, user } = loaderData;
-  console.log(user.name, user.email);
 
   const { clientId } = useParams<{ clientId: string }>();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

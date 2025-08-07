@@ -19,7 +19,7 @@ export const RightPanel = ({
   client,
 }: Props) => {
   const navigation = useNavigation();
-  const isNavigating = Boolean(navigation.location);
+  const isNavigating = Boolean(navigation.location);  
 
   return (
     <div
